@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package healthservice;
+
+option java_package = "com.github.healthservice.grpc";
+option java_multiple_files = true;
+
+service HealthService {
+  //unary method call
+  rpc checkTemperature(TemperatureRequest) returns (TemperatureResponse) {};
+
+  //Server Streaming Method call - Step counter for the dog using the inbuilt pedometer
+  rpc stepCounter(PedometerRequest) returns (stream PedometerResponse) {};
+
+  //Server Streaming Method call - Heartbeat sensor checks the dogs beats per minute
+  rpc bpmCounter(HeartBeatSensorRequest) returns (stream HeartBeatSensorResponse) {};
+}
+
+message TemperatureRequest {
+  string currentTempRequest = 1;
+}
+
+message TemperatureResponse {
+  string result = 1;
+}
+
+message PedometerStatus{
+  bool isActive = 1;
+  int32 previousCount = 2;
+}
+
+message PedometerResponse{
+  string result = 1;
+  double avgSpeed = 2;
+  int32 currentCount =3;
+}
+
+message PedometerRequest{
+  PedometerStatus pedometerStatus = 1;
+}
+
+message HeartBeatSensorStatus{
+  bool isActive = 1;
+  double previousUsageTime =2;
+}
+
+message HeartBeatSensorResponse{
+  string result = 1;
+  int32  bpm = 2;
+}
+
+message HeartBeatSensorRequest{
+  HeartBeatSensorStatus heartBeatSensorStatus = 1;
+}
+
+
+

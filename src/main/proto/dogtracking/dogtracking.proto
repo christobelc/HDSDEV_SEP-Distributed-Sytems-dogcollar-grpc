@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package dogtracking;
+
+option java_package = "com.github.dogtracking.grpc";
+option java_multiple_files = true;
+
+service DogTracking {
+  //Unary Method call - check if the dog is wearing the collar
+  rpc WearingCollar(WearingCollarRequest) returns (WearingCollarResponse) {};
+
+  //Server Streaming Method call - sets the out of safety zone if dog strays stream dogs location
+  // streams the dogs location if out of bounds is triggered
+  rpc OutOfBoundsLocation(SafetyZoneRequest) returns (stream UpdateLocationResponse) {};
+}
+
+message CurrentStatus {
+  bool wearing = 1;
+  int32 heartBeatSensorBPM =2;
+  double thermometerBodyTemp =3;
+}
+
+message WearingCollarRequest{
+  CurrentStatus currentStatus = 1;
+}
+
+message WearingCollarResponse {
+  string result = 1;
+}
+
+//Out of Bounds messages
+
+message SafeZoneCoordinates{
+  double latitude = 1;
+  double longitude =2;
+}
+
+message UpdateLocationResponse{
+  string result =1;
+}
+
+// box shaped out of bounds coordinates
+message SafetyZoneRequest{
+  SafeZoneCoordinates safeZoneCoordinates1 = 1;
+  SafeZoneCoordinates safeZoneCoordinates2 = 2;
+  SafeZoneCoordinates safeZoneCoordinates3 = 3;
+  SafeZoneCoordinates safeZoneCoordinates4 = 4;
+}
