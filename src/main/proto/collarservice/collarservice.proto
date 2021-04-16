@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package collarservice;
+
+option java_package = "com.github.collarservice.grpc";
+option java_multiple_files = true;
+
+service CollarService{
+
+  //Client Streaming method call - stream voice message of the owner to the collar
+  rpc streamVoice(stream StreamVoiceRequest) returns (StreamVoiceResponse) {};
+
+  //Server Streaming Method call - stream illuminance(lux value) that the sensor picks up on the collar
+  rpc collarLight(LedLightRequest) returns (stream LedLightResponse) {};
+}
+
+message LedLightStatus{
+  bool turnOn = 1;
+  int32 battery = 2;
+}
+
+message LedLightRequest{
+  LedLightStatus ledLightStatus = 1;
+}
+
+message LedLightResponse{
+  string result = 1;
+}
+
+message StreamVoiceRequest{
+  VoiceMessages voiceMessages =1;
+}
+
+message VoiceMessages{
+  string message1 = 1;
+  string message2 = 2;
+  string message3 = 3;
+}
+
+message StreamVoiceResponse{
+  string result = 1;
+}

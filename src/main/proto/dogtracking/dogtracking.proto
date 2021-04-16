@@ -12,6 +12,9 @@ service DogTracking {
   //Server Streaming Method call - sets the out of safety zone if dog strays stream dogs location
   // streams the dogs location if out of bounds is triggered
   rpc OutOfBoundsLocation(SafetyZoneRequest) returns (stream UpdateLocationResponse) {};
+
+  //Bi directional Streaming
+  rpc FindTheDog(stream OwnerLocationRequest) returns (stream DogLocationResponse) {};
 }
 
 message CurrentStatus {
@@ -46,3 +49,13 @@ message SafetyZoneRequest{
   SafeZoneCoordinates safeZoneCoordinates3 = 3;
   SafeZoneCoordinates safeZoneCoordinates4 = 4;
 }
+
+//--------------- bi directional streaming messages ------------
+message DogLocationResponse{
+  string dogCoordinates= 1;
+}
+
+message OwnerLocationRequest{
+  string ownerCoordinates = 1;
+}
+

@@ -44,6 +44,16 @@ public final class Dogtracking {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_dogtracking_SafetyZoneRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dogtracking_DogLocationResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dogtracking_DogLocationResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dogtracking_OwnerLocationRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dogtracking_OwnerLocationRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -68,13 +78,18 @@ public final class Dogtracking {
       "ing.SafeZoneCoordinates\022>\n\024safeZoneCoord" +
       "inates3\030\003 \001(\0132 .dogtracking.SafeZoneCoor" +
       "dinates\022>\n\024safeZoneCoordinates4\030\004 \001(\0132 ." +
-      "dogtracking.SafeZoneCoordinates2\307\001\n\013DogT" +
-      "racking\022X\n\rWearingCollar\022!.dogtracking.W" +
-      "earingCollarRequest\032\".dogtracking.Wearin" +
-      "gCollarResponse\"\000\022^\n\023OutOfBoundsLocation" +
-      "\022\036.dogtracking.SafetyZoneRequest\032#.dogtr" +
-      "acking.UpdateLocationResponse\"\0000\001B\037\n\033com" +
-      ".github.dogtracking.grpcP\001b\006proto3"
+      "dogtracking.SafeZoneCoordinates\"-\n\023DogLo" +
+      "cationResponse\022\026\n\016dogCoordinates\030\001 \001(\t\"0" +
+      "\n\024OwnerLocationRequest\022\030\n\020ownerCoordinat" +
+      "es\030\001 \001(\t2\240\002\n\013DogTracking\022X\n\rWearingColla" +
+      "r\022!.dogtracking.WearingCollarRequest\032\".d" +
+      "ogtracking.WearingCollarResponse\"\000\022^\n\023Ou" +
+      "tOfBoundsLocation\022\036.dogtracking.SafetyZo" +
+      "neRequest\032#.dogtracking.UpdateLocationRe" +
+      "sponse\"\0000\001\022W\n\nFindTheDog\022!.dogtracking.O" +
+      "wnerLocationRequest\032 .dogtracking.DogLoc" +
+      "ationResponse\"\000(\0010\001B\037\n\033com.github.dogtra" +
+      "cking.grpcP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -116,6 +131,18 @@ public final class Dogtracking {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_dogtracking_SafetyZoneRequest_descriptor,
         new java.lang.String[] { "SafeZoneCoordinates1", "SafeZoneCoordinates2", "SafeZoneCoordinates3", "SafeZoneCoordinates4", });
+    internal_static_dogtracking_DogLocationResponse_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_dogtracking_DogLocationResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dogtracking_DogLocationResponse_descriptor,
+        new java.lang.String[] { "DogCoordinates", });
+    internal_static_dogtracking_OwnerLocationRequest_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_dogtracking_OwnerLocationRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dogtracking_OwnerLocationRequest_descriptor,
+        new java.lang.String[] { "OwnerCoordinates", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

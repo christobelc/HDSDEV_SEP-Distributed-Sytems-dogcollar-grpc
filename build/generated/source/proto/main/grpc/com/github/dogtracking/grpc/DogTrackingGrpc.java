@@ -76,6 +76,37 @@ public final class DogTrackingGrpc {
     return getOutOfBoundsLocationMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.github.dogtracking.grpc.OwnerLocationRequest,
+      com.github.dogtracking.grpc.DogLocationResponse> getFindTheDogMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "FindTheDog",
+      requestType = com.github.dogtracking.grpc.OwnerLocationRequest.class,
+      responseType = com.github.dogtracking.grpc.DogLocationResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+  public static io.grpc.MethodDescriptor<com.github.dogtracking.grpc.OwnerLocationRequest,
+      com.github.dogtracking.grpc.DogLocationResponse> getFindTheDogMethod() {
+    io.grpc.MethodDescriptor<com.github.dogtracking.grpc.OwnerLocationRequest, com.github.dogtracking.grpc.DogLocationResponse> getFindTheDogMethod;
+    if ((getFindTheDogMethod = DogTrackingGrpc.getFindTheDogMethod) == null) {
+      synchronized (DogTrackingGrpc.class) {
+        if ((getFindTheDogMethod = DogTrackingGrpc.getFindTheDogMethod) == null) {
+          DogTrackingGrpc.getFindTheDogMethod = getFindTheDogMethod =
+              io.grpc.MethodDescriptor.<com.github.dogtracking.grpc.OwnerLocationRequest, com.github.dogtracking.grpc.DogLocationResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "FindTheDog"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.github.dogtracking.grpc.OwnerLocationRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.github.dogtracking.grpc.DogLocationResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new DogTrackingMethodDescriptorSupplier("FindTheDog"))
+              .build();
+        }
+      }
+    }
+    return getFindTheDogMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -145,6 +176,16 @@ public final class DogTrackingGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getOutOfBoundsLocationMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     *Bi directional Streaming
+     * </pre>
+     */
+    public io.grpc.stub.StreamObserver<com.github.dogtracking.grpc.OwnerLocationRequest> findTheDog(
+        io.grpc.stub.StreamObserver<com.github.dogtracking.grpc.DogLocationResponse> responseObserver) {
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getFindTheDogMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -161,6 +202,13 @@ public final class DogTrackingGrpc {
                 com.github.dogtracking.grpc.SafetyZoneRequest,
                 com.github.dogtracking.grpc.UpdateLocationResponse>(
                   this, METHODID_OUT_OF_BOUNDS_LOCATION)))
+          .addMethod(
+            getFindTheDogMethod(),
+            io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
+              new MethodHandlers<
+                com.github.dogtracking.grpc.OwnerLocationRequest,
+                com.github.dogtracking.grpc.DogLocationResponse>(
+                  this, METHODID_FIND_THE_DOG)))
           .build();
     }
   }
@@ -200,6 +248,17 @@ public final class DogTrackingGrpc {
         io.grpc.stub.StreamObserver<com.github.dogtracking.grpc.UpdateLocationResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getOutOfBoundsLocationMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     *Bi directional Streaming
+     * </pre>
+     */
+    public io.grpc.stub.StreamObserver<com.github.dogtracking.grpc.OwnerLocationRequest> findTheDog(
+        io.grpc.stub.StreamObserver<com.github.dogtracking.grpc.DogLocationResponse> responseObserver) {
+      return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
+          getChannel().newCall(getFindTheDogMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -268,6 +327,7 @@ public final class DogTrackingGrpc {
 
   private static final int METHODID_WEARING_COLLAR = 0;
   private static final int METHODID_OUT_OF_BOUNDS_LOCATION = 1;
+  private static final int METHODID_FIND_THE_DOG = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -304,6 +364,9 @@ public final class DogTrackingGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_FIND_THE_DOG:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.findTheDog(
+              (io.grpc.stub.StreamObserver<com.github.dogtracking.grpc.DogLocationResponse>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -357,6 +420,7 @@ public final class DogTrackingGrpc {
               .setSchemaDescriptor(new DogTrackingFileDescriptorSupplier())
               .addMethod(getWearingCollarMethod())
               .addMethod(getOutOfBoundsLocationMethod())
+              .addMethod(getFindTheDogMethod())
               .build();
         }
       }

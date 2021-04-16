@@ -68,7 +68,7 @@ public class HealthServiceImpl extends HealthServiceGrpc.HealthServiceImplBase {
         double previousUsageTime = request.getHeartBeatSensorStatus().getPreviousUsageTime();
         int bpm;
         try{
-            //begin the counting each second
+            //lets read the bpm in real time, hardcoded values for demo purposes
             for (int i = 0; i < 30; i++){
                 if (i%2 == 0){
                     bpm = 69;
