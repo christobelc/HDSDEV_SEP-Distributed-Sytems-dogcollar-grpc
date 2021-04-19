@@ -10,7 +10,7 @@ public class CollarServiceServer {
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("This is the gRPC server");
 
-        Server server = ServerBuilder.forPort(50051)
+        Server server = ServerBuilder.forPort(50052)
                 .addService(new CollarServiceImpl())
                 .build();
 

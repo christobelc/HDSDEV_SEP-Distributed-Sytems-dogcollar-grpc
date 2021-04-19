@@ -22,11 +22,11 @@ public class CollarServiceClient {
     }
 
     public void run(){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052)
                 .usePlaintext()
                 .build();
 
-        //doServerStreamingCall(channel);
+//        doServerStreamingCall(channel);
         doClientStreamingCall(channel);
 
         System.out.print("The Channel is shutting down!");
@@ -82,28 +82,31 @@ public class CollarServiceClient {
         });
 
         // 1st message
+        System.out.println("Client Sent Message 1:");
         requestObserver.onNext(StreamVoiceRequest.newBuilder()
                     .setVoiceMessages(VoiceMessages.newBuilder()
                             .setMessage1("Come Home Fido")
                             .build())
                     .build());
-        System.out.println("Sent Message 1:");
+
 
         // 2nd message
+        System.out.println("Client Sent Message 2:");
         requestObserver.onNext(StreamVoiceRequest.newBuilder()
                 .setVoiceMessages(VoiceMessages.newBuilder()
                         .setMessage2("Dinner is ready")
                         .build())
                 .build());
-        System.out.println("Sent Message 2:");
+
 
         // 3rd message
+        System.out.println("Client Sent Message 3:");
         requestObserver.onNext(StreamVoiceRequest.newBuilder()
                 .setVoiceMessages(VoiceMessages.newBuilder()
                         .setMessage3("Quickly Come Home Fido")
                         .build())
                 .build());
-        System.out.println("Sent Message 3:");
+
 
         // after all the messages are sent we tell the server that sending data is finished
         requestObserver.onCompleted();
@@ -114,9 +117,8 @@ public class CollarServiceClient {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
+
 
 
 }

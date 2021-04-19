@@ -1,11 +1,14 @@
 package com.github.dogtracking.grpc.client;
 
-import com.github.collarservice.grpc.CollarServiceGrpc;
+
 import com.github.dogtracking.grpc.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class DogTrackingClient {
 
@@ -20,15 +23,18 @@ public class DogTrackingClient {
     }
 
     private void run(){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052)
                 .usePlaintext()
                 .build();
 
         //unary grpc method
 //        doWearingCollar(channel);
+
         //server streaming grpc method
-        doUpdateLocation(channel);
+//        doUpdateLocation(channel);
+
         //bidirectional grpc method
+        doFindTheDog(channel);
 
         // do something
         System.out.println("Channel Shutdown!");
@@ -65,7 +71,6 @@ public class DogTrackingClient {
         // created a service client (Synchronous - Blocking)
         DogTrackingGrpc.DogTrackingBlockingStub dogTracker = DogTrackingGrpc.newBlockingStub(channel);
 
-        //----------------Server Streaming ------------------
         //pass the data from the messages, prepare the request
         SafetyZoneRequest safetyZoneRequest = SafetyZoneRequest.newBuilder()
                 .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLatitude(49.09))
@@ -88,8 +93,53 @@ public class DogTrackingClient {
 
         //Asynchronous Stub
         DogTrackingGrpc.DogTrackingStub asyncClient = DogTrackingGrpc.newStub(channel);
-        CountDownLatch latch = new CountDownLatch(1);
 
+         StreamObserver<OwnerLocationRequest> requestObserver = asyncClient.findTheDog(new StreamObserver<DogLocationResponse>() {
+            @Override
+            public void onNext(DogLocationResponse value) {
+                System.out.println("Response from server: " + value.getDogCoordinates());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+            System.out.println("System is done sending data");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+         List<String> list = Arrays.asList("54.000000N 52.000000W", "54.010000N 52.0200000W","54.000000N 52.000000W",
+                 "54.000000N 52.000000W", "54.010000N 52.0200000W","54.000000N 52.000000W");
+
+            for (String coordinates: list) {
+                System.out.println("The dog's current coordinates: " + coordinates);
+                requestObserver.onNext(OwnerLocationRequest.newBuilder()
+                    .setOwnerCoordinates(coordinates)
+                    .build());
+                try {
+                    Thread.sleep(200);
+                    System.out.println("Waiting 2 seconds......");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            requestObserver.onCompleted();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
 }

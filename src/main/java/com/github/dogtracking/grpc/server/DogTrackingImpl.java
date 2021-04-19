@@ -87,7 +87,6 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
                     responseObserver.onNext(response);
                 }
         responseObserver.onCompleted();
-
     }
 
     @Override
@@ -95,12 +94,13 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
         StreamObserver<OwnerLocationRequest> requestObserver = new StreamObserver<OwnerLocationRequest>() {
             @Override
             public void onNext(OwnerLocationRequest value) {
-                String result = "Owners coordinates" + value.getOwnerCoordinates();
-                DogLocationResponse dogLocationResponse = DogLocationResponse.newBuilder()
-                        .setDogCoordinates(result)
+                String OwnersCoordinates = "This is the current Owners Coordinates: " + value.getOwnerCoordinates();
+                //build response
+                DogLocationResponse response = DogLocationResponse.newBuilder()
+                        .setDogCoordinates(OwnersCoordinates)
                         .build();
 
-                responseObserver.onNext(dogLocationResponse);
+                responseObserver.onNext(response);
             }
 
             @Override
@@ -110,9 +110,11 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
 
             @Override
             public void onCompleted() {
+                //completed
                 responseObserver.onCompleted();
             }
         };
-        return requestObserver;
+        return requestObserver ;
     }
+
 }
