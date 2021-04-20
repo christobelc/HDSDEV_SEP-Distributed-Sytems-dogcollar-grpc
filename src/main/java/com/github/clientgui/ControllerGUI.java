@@ -1,6 +1,8 @@
-package com.github.gui;
+package com.github.clientgui;
 
+import com.github.collarservice.grpc.*;
 import com.github.dogtracking.grpc.*;
+import com.github.healthservice.grpc.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
@@ -12,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class ControllerGUI implements ActionListener {
     private JTextField entry1, reply1;
@@ -149,7 +153,7 @@ public class ControllerGUI implements ActionListener {
         panel.add(entry5);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 4");
+        JButton button = new JButton("Invoke Service 5");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -170,14 +174,14 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Enter value");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         entry6 = new JTextField("",10);
         panel.add(entry6);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 4");
+        JButton button = new JButton("Invoke Service 6");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -198,14 +202,14 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Enter value");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         entry7 = new JTextField("",10);
         panel.add(entry7);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 4");
+        JButton button = new JButton("Invoke Service 7");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -226,14 +230,14 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Enter value");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         entry8 = new JTextField("",10);
         panel.add(entry8);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 4");
+        JButton button = new JButton("Invoke Service 8");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -359,6 +363,9 @@ public class ControllerGUI implements ActionListener {
 //            reply1.setText( String.valueOf(wearingCollarResponse.getResult()) );
 
 
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
+
 
 //            ds.service2.ResponseMessage response = blockingStub.service2Do(request);
 //
@@ -421,6 +428,9 @@ public class ControllerGUI implements ActionListener {
                 exception.printStackTrace();
             }
 
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
+
 //            //preparing message to send
 //            ds.service3.RequestMessage request = ds.service3.RequestMessage.newBuilder().setText(entry3.getText()).build();
 //
@@ -429,7 +439,213 @@ public class ControllerGUI implements ActionListener {
 //
 //            reply3.setText( String.valueOf( response.getLength()) );
 
+        }else if (label.equals("Invoke Service 4")) {
+            System.out.println("service 4 to be invoked ...");
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
+                    .usePlaintext()
+                    .build();
+
+            System.out.println("Making Stub");
+
+            // created a service client (Synchronous - Blocking)
+            HealthServiceGrpc.HealthServiceBlockingStub healthService = HealthServiceGrpc.newBlockingStub(channel);
+
+                    //Request
+                TemperatureRequest temperatureRequest = TemperatureRequest.newBuilder()
+                    .setCurrentTempRequest("Temperature request")
+                    .build();
+
+            //Response
+                TemperatureResponse temperatureResponse = healthService.checkTemperature(temperatureRequest);
+                System.out.println(temperatureResponse.getResult());
+
+                reply4.setText( String.valueOf( temperatureResponse.getResult()) );
+                System.out.print("The Channel is shutting down!");
+                channel.shutdown();
+
+
+        }else if (label.equals("Invoke Service 5")) {
+            System.out.println("service 5 to be invoked ...");
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
+                    .usePlaintext()
+                    .build();
+
+            System.out.println("Making Stub");
+
+            // created a service client (Synchronous - Blocking)
+            HealthServiceGrpc.HealthServiceBlockingStub healthService = HealthServiceGrpc.newBlockingStub(channel);
+
+            //---------------Server Streaming step counter method ---------------
+
+        PedometerRequest pedometerRequest = PedometerRequest.newBuilder()
+                .setPedometerStatus(PedometerStatus.newBuilder().setIsActive(true))
+                .setPedometerStatus(PedometerStatus.newBuilder().setPreviousCount(3500))
+                .build();
+        System.out.println("We are here!");
+
+        //Stream in a blocking way
+        healthService.stepCounter(pedometerRequest)
+                .forEachRemaining(pedometerResponse -> {
+                    System.out.println(pedometerResponse.getResult());
+                    System.out.println("The avg speed KPH is: "+pedometerResponse.getAvgSpeed());
+                });
+
+//            reply5.setText( String.valueOf() );
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
+
+
+
+        }else if (label.equals("Invoke Service 6")) {
+            System.out.println("service 6 to be invoked ...");
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
+                    .usePlaintext()
+                    .build();
+
+            System.out.println("Making Stub");
+
+            // created a service client (Synchronous - Blocking)
+            HealthServiceGrpc.HealthServiceBlockingStub healthService = HealthServiceGrpc.newBlockingStub(channel);
+
+            //---------------Server Streaming step counter method ---------------
+
+            PedometerRequest pedometerRequest = PedometerRequest.newBuilder()
+                    .setPedometerStatus(PedometerStatus.newBuilder().setIsActive(true))
+                    .setPedometerStatus(PedometerStatus.newBuilder().setPreviousCount(3500))
+                    .build();
+            System.out.println("We are here!");
+
+            //Stream in a blocking way
+            healthService.stepCounter(pedometerRequest)
+                    .forEachRemaining(pedometerResponse -> {
+                        System.out.println(pedometerResponse.getResult());
+                        System.out.println("The avg speed KPH is: "+pedometerResponse.getAvgSpeed());
+                    });
+
+//            reply5.setText( String.valueOf() );
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
+
+
+        }else if (label.equals("Invoke Service 7")) {
+            System.out.println("service 7 to be invoked ...");
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50054)
+                    .usePlaintext()
+                    .build();
+
+
+            System.out.println("Making Stub");
+
+            // created a service client (Synchronous - Blocking)
+            CollarServiceGrpc.CollarServiceBlockingStub collarService = CollarServiceGrpc.newBlockingStub(channel);
+
+            //---------------Server Streaming led light reader---------------
+
+            //build request
+            LedLightRequest ledLightRequest = LedLightRequest.newBuilder()
+                    .setLedLightStatus(LedLightStatus.newBuilder().setTurnOn(false))
+                    .setLedLightStatus(LedLightStatus.newBuilder().setBattery(50))
+                    .build();
+
+            //Stream in a blocking way!
+            collarService.collarLight(ledLightRequest)
+                    .forEachRemaining(ledLightResponse -> {
+                        System.out.println(ledLightResponse.getResult());
+                    });
+
+//            reply5.setText( String.valueOf() );
+
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
+
+        }else if (label.equals("Invoke Service 8")) {
+            System.out.println("service 8 to be invoked ...");
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50054)
+                    .usePlaintext()
+                    .build();
+
+
+            System.out.println("Making Stub");
+            CountDownLatch latch = new CountDownLatch(1);
+
+
+            CollarServiceGrpc.CollarServiceBlockingStub collarService = CollarServiceGrpc.newBlockingStub(channel);
+
+            // created a service client (Asynchronous)
+            CollarServiceGrpc.CollarServiceStub asyncClient = CollarServiceGrpc.newStub(channel);
+
+            //client streaming method streaming the owners voice to the collar
+            StreamObserver<StreamVoiceRequest> requestObserver = asyncClient.streamVoice(new StreamObserver<StreamVoiceResponse>() {
+                @Override
+                public void onNext(StreamVoiceResponse value) {
+                    //we get a response from the server
+                    System.out.println("Received a response from the server ");
+                    System.out.println(value.getResult());
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    // we get an error from the server
+                }
+
+                @Override
+                public void onCompleted() {
+                    // the server finished sending data
+                    //onCompleted will be called right after onNext()
+                    System.out.println("Server has completed sending us something ");
+                    latch.countDown();
+                }
+            });
+
+            // 1st message
+            System.out.println("Client Sent Message 1:");
+            requestObserver.onNext(StreamVoiceRequest.newBuilder()
+                    .setVoiceMessages(VoiceMessages.newBuilder()
+                            .setMessage1("Come Home Fido")
+                            .build())
+                    .build());
+
+
+            // 2nd message
+            System.out.println("Client Sent Message 2:");
+            requestObserver.onNext(StreamVoiceRequest.newBuilder()
+                    .setVoiceMessages(VoiceMessages.newBuilder()
+                            .setMessage2("Dinner is ready")
+                            .build())
+                    .build());
+
+
+            // 3rd message
+            System.out.println("Client Sent Message 3:");
+            requestObserver.onNext(StreamVoiceRequest.newBuilder()
+                    .setVoiceMessages(VoiceMessages.newBuilder()
+                            .setMessage3("Quickly Come Home Fido")
+                            .build())
+                    .build());
+
+
+            // after all the messages are sent we tell the server that sending data is finished
+            requestObserver.onCompleted();
+
+            //latch is required to give time for server response
+            try {
+                latch.await(3L, TimeUnit.SECONDS);
+            } catch (InterruptedException except) {
+                except.printStackTrace();
+            }
+
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
+
+//            reply5.setText( String.valueOf() );
         }
+
+
 
 
     }
