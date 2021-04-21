@@ -18,13 +18,13 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
         //collar checks if dog is wearing correctly
 
         // heartbeat sensor checks the current BPM of the dog
-        heartBeatSensorBPM = 40;
+//        heartBeatSensorBPM = 40;
         //thermometer sensor checks the current body temperature of the dog
-        thermometerBodyTemp = 36.5;
+//        thermometerBodyTemp = 36.5;
 
-        String result =  "Dog is wearing the collar: " + Boolean.toString(wearing) +
-                " | Beats Per Minute: " + Integer.toString(heartBeatSensorBPM) + " | " +
-                "Body Temperature: " + String.valueOf(thermometerBodyTemp) + " | ";
+        String result =  "Dog is wearing the collar: " + wearing +
+                " | Beats Per Minute: " + heartBeatSensorBPM + " | " +
+                "Body Temperature: " + thermometerBodyTemp + " | ";
 
         // create a response
         WearingCollarResponse response = WearingCollarResponse.newBuilder()

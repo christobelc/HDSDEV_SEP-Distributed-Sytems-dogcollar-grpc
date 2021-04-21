@@ -18,7 +18,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class ControllerGUI implements ActionListener {
-    private JTextField entry1, reply1;
+    private JTextField entry1, entry11, entry111, reply1;
     private JTextField entry2, reply2;
     private JTextField entry3, reply3;
     private JTextField entry4, reply4;
@@ -34,19 +34,23 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Wearing Collar | BPM | Body Temp");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        entry1 = new JTextField("",10);
+        entry1 = new JTextField("",3);
         panel.add(entry1);
+        entry11 = new JTextField("",3);
+        panel.add(entry11);
+        entry111 = new JTextField("",3);
+        panel.add(entry111);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 1");
+        JButton button = new JButton("CollarStatus");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        reply1 = new JTextField("", 10);
+        reply1 = new JTextField("", 50);
         reply1 .setEditable(false);
         panel.add(reply1 );
 
@@ -62,7 +66,7 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Enter value");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         entry2 = new JTextField("",10);
@@ -300,24 +304,38 @@ public class ControllerGUI implements ActionListener {
         JButton button = (JButton)e.getSource();
         String label = button.getActionCommand();
 
-        if (label.equals("Invoke Service 1")) {
-            System.out.println("service 1 to be invoked ...");
+        if (label.equals("CollarStatus")) {
+            System.out.println(" Wearing Collar | BPM | Body Temp service to be invoked ...");
 
 
-            /*
-             *
-             */
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052).usePlaintext().build();
 
             // created a service client (Synchronous - Blocking)
             DogTrackingGrpc.DogTrackingBlockingStub dogTracker = DogTrackingGrpc.newBlockingStub(channel);
 
+            boolean wearing;
+            String temp = entry11.getText();
+            int bpm = Integer.parseInt(temp);
+            temp = entry111.getText();
+            double bodyTemp = Double.parseDouble(temp);
+            if(entry1.getText().equals("true")){
+                wearing = true;
+            }else{
+                wearing = false;
+                bpm = 0;
+                bodyTemp = 0.0;
+            }
+            System.out.println("wearing: " + wearing);
+            System.out.println("bpm: " + bpm);
+            System.out.println("bodyTemp: " + bodyTemp);
+
+
             //----------------unary method-----------------------
             // make the protocol buffer current status message
             CurrentStatus currentStatus = CurrentStatus.newBuilder()
-                    .setWearing(true)
-                    .setHeartBeatSensorBPM(40)
-                    .setThermometerBodyTemp(36.8)
+                    .setWearing(wearing)
+                    .setHeartBeatSensorBPM(bpm)
+                    .setThermometerBodyTemp(bodyTemp)
                     .build();
 
             // Get request message
@@ -328,6 +346,10 @@ public class ControllerGUI implements ActionListener {
             //pass the request message, call the gRPC method
             WearingCollarResponse wearingCollarResponse = dogTracker.wearingCollar(wearingCollarRequest);
             reply1.setText( String.valueOf(wearingCollarResponse.getResult()) );
+
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
+
 
         }else if (label.equals("Invoke Service 2")) {
 
