@@ -17,7 +17,7 @@ service HealthService {
 }
 
 message TemperatureRequest {
-  string currentTempRequest = 1;
+  int32 currentTempRequest = 1;
 }
 
 message TemperatureResponse {

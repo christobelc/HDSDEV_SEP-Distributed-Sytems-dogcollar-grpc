@@ -65,7 +65,7 @@ public final class Healthservice {
     java.lang.String[] descriptorData = {
       "\n!healthservice/healthservice.proto\022\rhea" +
       "lthservice\"0\n\022TemperatureRequest\022\032\n\022curr" +
-      "entTempRequest\030\001 \001(\t\"%\n\023TemperatureRespo" +
+      "entTempRequest\030\001 \001(\005\"%\n\023TemperatureRespo" +
       "nse\022\016\n\006result\030\001 \001(\t\":\n\017PedometerStatus\022\020" +
       "\n\010isActive\030\001 \001(\010\022\025\n\rpreviousCount\030\002 \001(\005\"" +
       "K\n\021PedometerResponse\022\016\n\006result\030\001 \001(\t\022\020\n\010" +

@@ -22,7 +22,7 @@ public class CollarServiceImpl extends CollarServiceGrpc.CollarServiceImplBase {
             active = true;
         try{
             //lets read the lux value of the light in real time, hardcoded values for demo purposes
-            for (int i = 0; i < 30; i++){
+            for (int i = 0; i < 10; i++){
                 if (i%2 == 0){
                     luxValue = 51;
                 }else{

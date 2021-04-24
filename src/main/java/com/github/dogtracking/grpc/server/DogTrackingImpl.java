@@ -62,7 +62,7 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
                 //check if one of the coordinates if outside the safe zone, not accurate but for demo its ok
                 if (dogLocation[0] > safteyZone[0][0]) {
                     try{
-                        for (int i =0; i< 60; i++){
+                        for (int i =0; i< 5; i++){
                             //fake movement data
                             dogLocation[0] -= 0.1;
                             dogLocation[1] += 0.1;

@@ -3,10 +3,13 @@ package com.github.clientgui;
 import com.github.collarservice.grpc.*;
 import com.github.dogtracking.grpc.*;
 import com.github.healthservice.grpc.*;
+import com.github.jmdns.ServiceDiscovery;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
+import javax.jmdns.ServiceInfo;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -16,15 +19,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControllerGUI implements ActionListener {
     private JTextField entry1, entry11, entry111, reply1;
-    private JTextField entry2, reply2;
+    private JTextField entry2, entry22, entry222, entry2222;
+    private JTextArea  reply2;
     private JTextField entry3, reply3;
     private JTextField entry4, reply4;
-    private JTextField entry5, reply5;
-    private JTextField entry6, reply6;
-    private JTextField entry7, reply7;
+    private JTextField entry5, entry55;
+    private JTextArea reply5;
+    private JTextField entry6, entry66;
+    private JTextArea reply6;
+    private JTextField entry7, entry77;
+    private JTextArea reply7;
     private JTextField entry8, reply8;
 
 
@@ -66,19 +74,25 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value");
+        JLabel label = new JLabel("SafeZone Coordinates |'dd.dd,dd.dd'");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        entry2 = new JTextField("",10);
+        entry2 = new JTextField("",3);
         panel.add(entry2);
+        entry22 = new JTextField("",3);
+        panel.add(entry22);
+        entry222 = new JTextField("",3);
+        panel.add(entry222);
+        entry2222 = new JTextField("",3);
+        panel.add(entry2222);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 2");
+        JButton button = new JButton("Dog's Location");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        reply2 = new JTextField("", 10);
+        reply2 = new JTextArea(10, 50);
         reply2 .setEditable(false);
         panel.add(reply2 );
 
@@ -122,14 +136,14 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Body Temperature")	;
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         entry4 = new JTextField("",10);
         panel.add(entry4);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 4");
+        JButton button = new JButton("Calculate");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -150,19 +164,21 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Pedometer Active | Previous Steps")	;
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        entry5 = new JTextField("",10);
+        entry5 = new JTextField("",3);
         panel.add(entry5);
+        entry55 = new JTextField("",3);
+        panel.add(entry55);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 5");
+        JButton button = new JButton("Start Step Tracking");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        reply5 = new JTextField("", 10);
+        reply5 = new JTextArea(20, 10);
         reply5 .setEditable(false);
         panel.add(reply5);
 
@@ -178,19 +194,21 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value");
+        JLabel label = new JLabel("Heartbeat Sensor Active | Time Used");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        entry6 = new JTextField("",10);
+        entry6 = new JTextField("",3);
         panel.add(entry6);
+        entry66 = new JTextField("",3);
+        panel.add(entry66);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 6");
+        JButton button = new JButton("Heartbeat Tracking");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        reply6 = new JTextField("", 10);
+        reply6 = new JTextArea(20, 10);
         reply6 .setEditable(false);
         panel.add(reply6);
 
@@ -209,8 +227,10 @@ public class ControllerGUI implements ActionListener {
         JLabel label = new JLabel("Enter value");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        entry7 = new JTextField("",10);
+        entry7 = new JTextField("",3);
         panel.add(entry7);
+        entry77 = new JTextField("",3);
+        panel.add(entry77);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
         JButton button = new JButton("Invoke Service 7");
@@ -218,7 +238,7 @@ public class ControllerGUI implements ActionListener {
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        reply7 = new JTextField("", 10);
+        reply7 = new JTextArea(20, 10);
         reply7 .setEditable(false);
         panel.add(reply7);
 
@@ -305,93 +325,116 @@ public class ControllerGUI implements ActionListener {
         String label = button.getActionCommand();
 
         if (label.equals("CollarStatus")) {
+
+
+            ServiceInfo serviceInfo;
+            String service_type = "_dogtrack._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
+
             System.out.println(" Wearing Collar | BPM | Body Temp service to be invoked ...");
 
-
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052).usePlaintext().build();
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 
             // created a service client (Synchronous - Blocking)
             DogTrackingGrpc.DogTrackingBlockingStub dogTracker = DogTrackingGrpc.newBlockingStub(channel);
-
             boolean wearing;
-            String temp = entry11.getText();
-            int bpm = Integer.parseInt(temp);
-            temp = entry111.getText();
-            double bodyTemp = Double.parseDouble(temp);
-            if(entry1.getText().equals("true")){
-                wearing = true;
-            }else{
-                wearing = false;
-                bpm = 0;
-                bodyTemp = 0.0;
+            int bpm;
+            double bodyTemp;
+            try {
+                String temp = entry11.getText();
+                bpm = Integer.parseInt(temp);
+                temp = entry111.getText();
+                bodyTemp = Double.parseDouble(temp);
+                if(entry1.getText().equals("true")){
+                    wearing = true;
+
+                    //----------------unary method-----------------------
+                    // make the protocol buffer current status message
+                    CurrentStatus currentStatus = CurrentStatus.newBuilder()
+                            .setWearing(wearing)
+                            .setHeartBeatSensorBPM(bpm)
+                            .setThermometerBodyTemp(bodyTemp)
+                            .build();
+
+                    // Get request message
+                    WearingCollarRequest wearingCollarRequest = WearingCollarRequest.newBuilder()
+                            .setCurrentStatus(currentStatus)
+                            .build();
+
+                    //pass the request message, call the gRPC method
+                    WearingCollarResponse wearingCollarResponse = dogTracker.wearingCollar(wearingCollarRequest);
+                    reply1.setText( String.valueOf(wearingCollarResponse.getResult()) );
+                }else{
+                    wearing = false;
+                    bpm = 0;
+                    bodyTemp = 0.0;
+                }
+                System.out.println("wearing: " + wearing);
+                System.out.println("bpm: " + bpm);
+                System.out.println("bodyTemp: " + bodyTemp);
+            }catch(IllegalArgumentException i){
+                System.out.println("Invalid inputs, please re-enter valid inputs");
             }
-            System.out.println("wearing: " + wearing);
-            System.out.println("bpm: " + bpm);
-            System.out.println("bodyTemp: " + bodyTemp);
-
-
-            //----------------unary method-----------------------
-            // make the protocol buffer current status message
-            CurrentStatus currentStatus = CurrentStatus.newBuilder()
-                    .setWearing(wearing)
-                    .setHeartBeatSensorBPM(bpm)
-                    .setThermometerBodyTemp(bodyTemp)
-                    .build();
-
-            // Get request message
-            WearingCollarRequest wearingCollarRequest = WearingCollarRequest.newBuilder()
-                    .setCurrentStatus(currentStatus)
-                    .build();
-
-            //pass the request message, call the gRPC method
-            WearingCollarResponse wearingCollarResponse = dogTracker.wearingCollar(wearingCollarRequest);
-            reply1.setText( String.valueOf(wearingCollarResponse.getResult()) );
 
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
 
-        }else if (label.equals("Invoke Service 2")) {
+        }else if (label.equals("Dog's Location")) {
 
-            System.out.println("service 2 to be invoked ...");
+            System.out.println("Safe Zone Service to be invoked");
 
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052).usePlaintext().build();
 
             // created a service client (Synchronous - Blocking)
             DogTrackingGrpc.DogTrackingBlockingStub dogTracker = DogTrackingGrpc.newBlockingStub(channel);
 
-            //pass the data from the messages, prepare the request
-            SafetyZoneRequest safetyZoneRequest = SafetyZoneRequest.newBuilder()
-                    .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLatitude(49.09))
-                    .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLongitude(49.12))
-                    .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLatitude(48.08))
-                    .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLongitude(48.00))
-                    .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLatitude(47.09))
-                    .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLongitude(47.12))
-                    .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLatitude(46.08))
-                    .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLongitude(46.00))
-                    .build();
-
-
-            //preparing message to send
-            //ds.service2.RequestMessage request = ds.service2.RequestMessage.newBuilder().setText(entry2.getText()).build();
+//          //Parse the input coordinates
+            String[] coordinates1 = entry2.getText().split(",", 2);
+            String[] coordinates2 = entry22.getText().split(",", 2);
+            String[] coordinates3 = entry222.getText().split(",", 2);
+            String[] coordinates4 = entry2222.getText().split(",", 2);
 
             //retrieving reply from service
-//            reply2.setText(String.valueOf(updateLocationResponse.getResult()));
-            dogTracker.outOfBoundsLocation(safetyZoneRequest).forEachRemaining(updateLocationResponse -> {
-                System.out.println(updateLocationResponse.getResult());
-            });
-//            WearingCollarResponse wearingCollarResponse = dogTracker.wearingCollar(wearingCollarRequest);
-//            reply1.setText( String.valueOf(wearingCollarResponse.getResult()) );
 
+            new Thread(() -> {
+                AtomicInteger call = new AtomicInteger();
+                try {
+                    SafetyZoneRequest safetyZoneRequest = SafetyZoneRequest.newBuilder()
+                        .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates1[0])))
+                        .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates1[1])))
+                        .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates2[0])))
+                        .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates2[1])))
+                        .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates3[0])))
+                        .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates3[1])))
+                        .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates4[0])))
+                        .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates4[1])))
+                        .build();
+
+                    reply2.setText("Updating Dogs Current location");
+                    Thread.sleep(1000);
+
+                    dogTracker.outOfBoundsLocation(safetyZoneRequest).forEachRemaining(updateLocationResponse ->{
+                        reply2.append("\n");
+                        reply2.append(updateLocationResponse.getResult());
+                        System.out.println(updateLocationResponse.getResult());
+                    });
+                }catch(InterruptedException e1){
+                    e1.printStackTrace();
+                }catch(StatusRuntimeException e1){
+                    JOptionPane.showConfirmDialog(null, "Server not reachable");
+                }catch(IllegalArgumentException i){
+                    System.out.println("Invalid input for coordinates");
+                }
+
+                }).run();
 
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
-
-
-//            ds.service2.ResponseMessage response = blockingStub.service2Do(request);
-//
-//            reply2.setText( String.valueOf( response.getLength()) );
 
         }else if (label.equals("Invoke Service 3")) {
             System.out.println("service 3 to be invoked ...");
@@ -461,7 +504,7 @@ public class ControllerGUI implements ActionListener {
 //
 //            reply3.setText( String.valueOf( response.getLength()) );
 
-        }else if (label.equals("Invoke Service 4")) {
+        }else if (label.equals("Calculate")) {
             System.out.println("service 4 to be invoked ...");
 
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
@@ -473,21 +516,30 @@ public class ControllerGUI implements ActionListener {
             // created a service client (Synchronous - Blocking)
             HealthServiceGrpc.HealthServiceBlockingStub healthService = HealthServiceGrpc.newBlockingStub(channel);
 
-                    //Request
-                TemperatureRequest temperatureRequest = TemperatureRequest.newBuilder()
-                    .setCurrentTempRequest("Temperature request")
-                    .build();
+            try {
+                String temp = entry4.getText();
+                int bodyTemp = Integer.parseInt(temp);
 
-            //Response
+                //Request
+                TemperatureRequest temperatureRequest = TemperatureRequest.newBuilder()
+                        .setCurrentTempRequest(bodyTemp)
+                        .build();
+
+                //Response
                 TemperatureResponse temperatureResponse = healthService.checkTemperature(temperatureRequest);
                 System.out.println(temperatureResponse.getResult());
 
-                reply4.setText( String.valueOf( temperatureResponse.getResult()) );
-                System.out.print("The Channel is shutting down!");
-                channel.shutdown();
+                reply4.setText(String.valueOf(temperatureResponse.getResult()));
+
+            }catch(IllegalArgumentException i){
+                System.out.println("Invalid input for temperature!");
+            }
+
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
 
 
-        }else if (label.equals("Invoke Service 5")) {
+        }else if (label.equals("Start Step Tracking")) {
             System.out.println("service 5 to be invoked ...");
 
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
@@ -501,26 +553,55 @@ public class ControllerGUI implements ActionListener {
 
             //---------------Server Streaming step counter method ---------------
 
-        PedometerRequest pedometerRequest = PedometerRequest.newBuilder()
-                .setPedometerStatus(PedometerStatus.newBuilder().setIsActive(true))
-                .setPedometerStatus(PedometerStatus.newBuilder().setPreviousCount(3500))
-                .build();
-        System.out.println("We are here!");
+            new Thread(() -> {
+                AtomicInteger call = new AtomicInteger();
+                try {
+                    String isActive = entry5.getText();
+                    int previousCount = Integer.parseInt(entry55.getText());
+                    boolean flag = true;
+                    if(!isActive.equals("true")){
+                        flag = false;
+                    }
+                    System.out.println("Pedometer: " + flag);
+                    PedometerRequest pedometerRequest = PedometerRequest.newBuilder()
+                            .setPedometerStatus(PedometerStatus.newBuilder().setIsActive(flag))
+                            .setPedometerStatus(PedometerStatus.newBuilder().setPreviousCount(previousCount))
+                            .build();
+                    System.out.println("We are here!");
+                    Thread.sleep(1000);
 
-        //Stream in a blocking way
-        healthService.stepCounter(pedometerRequest)
-                .forEachRemaining(pedometerResponse -> {
-                    System.out.println(pedometerResponse.getResult());
-                    System.out.println("The avg speed KPH is: "+pedometerResponse.getAvgSpeed());
-                });
+                    if(!flag){
+                            reply5.append("Pedometer can't be reached!");
+                    }else {
+                        //Stream in a blocking way
+                        healthService.stepCounter(pedometerRequest)
+                                .forEachRemaining(pedometerResponse -> {
+                                    reply5.append("\n");
+                                    reply5.append("The avg speed KPH: "  + pedometerResponse.getAvgSpeed());
+                                    reply5.append("\n");
+                                    reply5.append(pedometerResponse.getResult());
+                                    System.out.println(pedometerResponse.getResult());
+                                    System.out.println("The avg speed KPH is: "+pedometerResponse.getAvgSpeed());
+                                });
+                    }
 
-//            reply5.setText( String.valueOf() );
+
+                }catch(InterruptedException e1){
+                    e1.printStackTrace();
+                }catch(StatusRuntimeException e1){
+                    JOptionPane.showConfirmDialog(null, "Server not reachable");
+                }catch(IllegalArgumentException i){
+                    System.out.println("Invalid input, please correct: boolean | previous steps");
+                }
+            }).run();
+
+
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
 
 
-        }else if (label.equals("Invoke Service 6")) {
+        }else if (label.equals("Heartbeat Tracking")) {
             System.out.println("service 6 to be invoked ...");
 
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
@@ -534,20 +615,40 @@ public class ControllerGUI implements ActionListener {
 
             //---------------Server Streaming step counter method ---------------
 
-            PedometerRequest pedometerRequest = PedometerRequest.newBuilder()
-                    .setPedometerStatus(PedometerStatus.newBuilder().setIsActive(true))
-                    .setPedometerStatus(PedometerStatus.newBuilder().setPreviousCount(3500))
-                    .build();
-            System.out.println("We are here!");
+            new Thread(() -> {
+                AtomicInteger call = new AtomicInteger();
+                try {
+                    String temp = entry6.getText();
+                    double previousUsageTime = Double.parseDouble(entry66.getText());
+                    boolean flag = true;
+                    if(!temp.equals("true")){
+                        flag = false;
+                    }
 
-            //Stream in a blocking way
-            healthService.stepCounter(pedometerRequest)
-                    .forEachRemaining(pedometerResponse -> {
-                        System.out.println(pedometerResponse.getResult());
-                        System.out.println("The avg speed KPH is: "+pedometerResponse.getAvgSpeed());
-                    });
+                    HeartBeatSensorRequest heartBeatSensorRequest = HeartBeatSensorRequest.newBuilder()
+                            .setHeartBeatSensorStatus(HeartBeatSensorStatus.newBuilder().setIsActive(flag))
+                            .setHeartBeatSensorStatus(HeartBeatSensorStatus.newBuilder().setPreviousUsageTime(previousUsageTime))
+                            .build();
+                    Thread.sleep(1000);
 
-//            reply5.setText( String.valueOf() );
+                    //Stream in a blocking way!
+                    healthService.bpmCounter(heartBeatSensorRequest)
+                            .forEachRemaining(heartBeatSensorResponse -> {
+                                reply6.append("\n");
+                                reply6.append(heartBeatSensorResponse.getResult());
+                                System.out.println(heartBeatSensorResponse.getResult());
+                            });
+
+                }catch(InterruptedException e1){
+                    e1.printStackTrace();
+                }catch(StatusRuntimeException e1){
+                    JOptionPane.showConfirmDialog(null, "Server not reachable");
+                }catch(IllegalArgumentException i){
+                    System.out.println("Invalid input, please correct: boolean | previous steps");
+                }
+            }).run();
+
+
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
@@ -565,24 +666,45 @@ public class ControllerGUI implements ActionListener {
             // created a service client (Synchronous - Blocking)
             CollarServiceGrpc.CollarServiceBlockingStub collarService = CollarServiceGrpc.newBlockingStub(channel);
 
-            //---------------Server Streaming led light reader---------------
 
-            //build request
-            LedLightRequest ledLightRequest = LedLightRequest.newBuilder()
-                    .setLedLightStatus(LedLightStatus.newBuilder().setTurnOn(false))
-                    .setLedLightStatus(LedLightStatus.newBuilder().setBattery(50))
-                    .build();
+            new Thread(() -> {
+                AtomicInteger call = new AtomicInteger();
+                try {
+                    String temp = entry7.getText();
+                    int battery = Integer.parseInt(entry77.getText());
+                    boolean flag = true;
+                    if(!temp.equals("true")){
+                        flag = false;
+                    }
+                    //---------------Server Streaming led light reader---------------
 
-            //Stream in a blocking way!
-            collarService.collarLight(ledLightRequest)
-                    .forEachRemaining(ledLightResponse -> {
-                        System.out.println(ledLightResponse.getResult());
-                    });
+                    //build request
+                    LedLightRequest ledLightRequest = LedLightRequest.newBuilder()
+                            .setLedLightStatus(LedLightStatus.newBuilder().setTurnOn(flag))
+                            .setLedLightStatus(LedLightStatus.newBuilder().setBattery(battery))
+                            .build();
 
-//            reply5.setText( String.valueOf() );
+                    Thread.sleep(1000);
+                    //Stream in a blocking way!
+                    collarService.collarLight(ledLightRequest)
+                            .forEachRemaining(ledLightResponse -> {
+                                reply7.append("\n");
+                                reply7.append(ledLightResponse.getResult());
+                                reply7.append("\n");
+                                System.out.println(ledLightResponse.getResult());
+                            });
 
-            System.out.print("The Channel is shutting down!");
-            channel.shutdown();
+                }catch(InterruptedException e1){
+                    e1.printStackTrace();
+                }catch(StatusRuntimeException e1){
+                    JOptionPane.showConfirmDialog(null, "Server not reachable");
+                }catch(IllegalArgumentException i){
+                    System.out.println("Invalid input, please correct: boolean | battery");
+                }
+            }).run();
+
+//            System.out.print("The Channel is shutting down!");
+//            channel.shutdown();
 
         }else if (label.equals("Invoke Service 8")) {
             System.out.println("service 8 to be invoked ...");
