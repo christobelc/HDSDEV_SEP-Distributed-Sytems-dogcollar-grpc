@@ -58,9 +58,9 @@ public class CollarServiceImpl extends CollarServiceGrpc.CollarServiceImplBase {
             @Override
             public void onNext(StreamVoiceRequest value) {
                 //client sends a messages for demo purposes sent one string with all the messages
-                result += "........." + value.getVoiceMessages().getMessage1()
-                        + "........." + value.getVoiceMessages().getMessage2()
-                        + "........." + value.getVoiceMessages().getMessage3();
+                result += "..." + value.getVoiceMessages().getMessage1()
+                        + ".." + value.getVoiceMessages().getMessage2()
+                        + ".." + value.getVoiceMessages().getMessage3();
             }
 
             @Override

@@ -20,7 +20,7 @@ public class DogTrackingServer {
 
 
 
-        Server server = ServerBuilder.forPort(50052)
+        Server server = ServerBuilder.forPort(50055)
                 .addService(new DogTrackingImpl())
                 .build();
 

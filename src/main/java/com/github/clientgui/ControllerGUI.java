@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +25,9 @@ public class ControllerGUI implements ActionListener {
     private JTextField entry1, entry11, entry111, reply1;
     private JTextField entry2, entry22, entry222, entry2222;
     private JTextArea  reply2;
-    private JTextField entry3, reply3;
+    private JTextField entry3;
+    private JTextArea reply3;
+
     private JTextField entry4, reply4;
     private JTextField entry5, entry55;
     private JTextArea reply5;
@@ -33,7 +35,8 @@ public class ControllerGUI implements ActionListener {
     private JTextArea reply6;
     private JTextField entry7, entry77;
     private JTextArea reply7;
-    private JTextField entry8, reply8;
+    private JTextField entry8, entry88, entry888;
+    private JTextArea reply8;
 
 
     private JPanel getService1JPanel() {
@@ -108,21 +111,22 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value")	;
+        JLabel label = new JLabel("Dog's coordinates")	;
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         entry3 = new JTextField("",10);
         panel.add(entry3);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 3");
+        JButton button = new JButton("Stream location");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        reply3 = new JTextField("", 10);
+        reply3 = new JTextArea(10, 10);
         reply3 .setEditable(false);
         panel.add(reply3 );
+
 
         panel.setLayout(boxlayout);
 
@@ -224,7 +228,7 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value");
+        JLabel label = new JLabel("Turn On light | Battery %");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         entry7 = new JTextField("",3);
@@ -233,7 +237,7 @@ public class ControllerGUI implements ActionListener {
         panel.add(entry77);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 7");
+        JButton button = new JButton("Current Light");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -254,19 +258,23 @@ public class ControllerGUI implements ActionListener {
 
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.X_AXIS);
 
-        JLabel label = new JLabel("Enter value");
+        JLabel label = new JLabel("Enter messages");
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        entry8 = new JTextField("",10);
+        entry8 = new JTextField("",3);
         panel.add(entry8);
+        entry88 = new JTextField("",3);
+        panel.add(entry88);
+        entry888 = new JTextField("",3);
+        panel.add(entry888);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton button = new JButton("Invoke Service 8");
+        JButton button = new JButton("Send to Collar");
         button.addActionListener(this);
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        reply8 = new JTextField("", 10);
+        reply8 = new JTextArea(20, 10);
         reply8 .setEditable(false);
         panel.add(reply8);
 
@@ -324,8 +332,9 @@ public class ControllerGUI implements ActionListener {
         JButton button = (JButton)e.getSource();
         String label = button.getActionCommand();
 
+        // is the dog wearing the collar and send back status
         if (label.equals("CollarStatus")) {
-
+            System.out.println(" Is dog wearing collar service to be invoked");
 
             ServiceInfo serviceInfo;
             String service_type = "_dogtrack._tcp.local.";
@@ -335,9 +344,11 @@ public class ControllerGUI implements ActionListener {
             int port = serviceInfo.getPort();
             String host = "localhost";
 
-            System.out.println(" Wearing Collar | BPM | Body Temp service to be invoked ...");
 
-            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
+                    .usePlaintext()
+                    .build();
 
             // created a service client (Synchronous - Blocking)
             DogTrackingGrpc.DogTrackingBlockingStub dogTracker = DogTrackingGrpc.newBlockingStub(channel);
@@ -383,12 +394,21 @@ public class ControllerGUI implements ActionListener {
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
-
+            //Sets the safe zone and streams the dogs location
         }else if (label.equals("Dog's Location")) {
-
             System.out.println("Safe Zone Service to be invoked");
 
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052).usePlaintext().build();
+            ServiceInfo serviceInfo;
+            String service_type = "_dogtrack._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
+
+
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 
             // created a service client (Synchronous - Blocking)
             DogTrackingGrpc.DogTrackingBlockingStub dogTracker = DogTrackingGrpc.newBlockingStub(channel);
@@ -405,53 +425,63 @@ public class ControllerGUI implements ActionListener {
                 AtomicInteger call = new AtomicInteger();
                 try {
                     SafetyZoneRequest safetyZoneRequest = SafetyZoneRequest.newBuilder()
-                        .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates1[0])))
-                        .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates1[1])))
-                        .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates2[0])))
-                        .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates2[1])))
-                        .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates3[0])))
-                        .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates3[1])))
-                        .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates4[0])))
-                        .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates4[1])))
-                        .build();
+                            .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates1[0])))
+                            .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates1[1])))
+                            .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates2[0])))
+                            .setSafeZoneCoordinates2(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates2[1])))
+                            .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates3[0])))
+                            .setSafeZoneCoordinates3(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates3[1])))
+                            .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates4[0])))
+                            .setSafeZoneCoordinates4(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates4[1])))
+                            .build();
 
                     reply2.setText("Updating Dogs Current location");
                     Thread.sleep(1000);
 
-                    dogTracker.outOfBoundsLocation(safetyZoneRequest).forEachRemaining(updateLocationResponse ->{
+                    dogTracker.outOfBoundsLocation(safetyZoneRequest).forEachRemaining(updateLocationResponse -> {
                         reply2.append("\n");
                         reply2.append(updateLocationResponse.getResult());
                         System.out.println(updateLocationResponse.getResult());
                     });
-                }catch(InterruptedException e1){
+                } catch (InterruptedException e1) {
                     e1.printStackTrace();
-                }catch(StatusRuntimeException e1){
+                } catch (StatusRuntimeException e1) {
                     JOptionPane.showConfirmDialog(null, "Server not reachable");
-                }catch(IllegalArgumentException i){
+                } catch (IllegalArgumentException i) {
                     System.out.println("Invalid input for coordinates");
                 }
 
-                }).run();
+            }).run();
 
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
-        }else if (label.equals("Invoke Service 3")) {
-            System.out.println("service 3 to be invoked ...");
+            //streams the dogs location and the owners location simultaneously
+        }else if (label.equals("Stream location")) {
+            System.out.println("Find the dog service");
 
 
-            /*
-             *
-             */
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052).usePlaintext().build();
+            ServiceInfo serviceInfo;
+            String service_type = "_dogtrack._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
+                    .usePlaintext()
+                    .build();
+
             //Asynchronous Stub
             DogTrackingGrpc.DogTrackingStub asyncClient = DogTrackingGrpc.newStub(channel);
-
 
             StreamObserver<OwnerLocationRequest> requestObserver = asyncClient.findTheDog(new StreamObserver<DogLocationResponse>() {
                 @Override
                 public void onNext(DogLocationResponse value) {
                     System.out.println("Response from server: " + value.getDogCoordinates());
+                    reply3.append("Response from server: " + value.getDogCoordinates()+"\n");
+                    reply3.append("\n");
                 }
 
                 @Override
@@ -470,10 +500,18 @@ public class ControllerGUI implements ActionListener {
                 }
             });
 
-            List<String> list = Arrays.asList("54.000000N 52.000000W", "54.010000N 52.0200000W","54.000000N 52.000000W",
-                    "54.000000N 52.000000W", "54.010000N 52.0200000W","54.000000N 52.000000W");
+
+            String[] dogsCoordinates = entry3.getText().split(",", 2);
+            String coordinateParsed = dogsCoordinates[0] +"N " + dogsCoordinates[1]+"W";
+            System.out.println("coordinate parsed" + coordinateParsed);
+            List<String> list = new ArrayList<>();
+            for(int i =0; i<6; i++){
+                list.add(coordinateParsed);
+            }
 
             for (String coordinates: list) {
+                reply3.append("\n");
+                reply3.append("The dog's current coordinates: " + coordinates);
                 System.out.println("The dog's current coordinates: " + coordinates);
                 requestObserver.onNext(OwnerLocationRequest.newBuilder()
                         .setOwnerCoordinates(coordinates)
@@ -496,18 +534,20 @@ public class ControllerGUI implements ActionListener {
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
-//            //preparing message to send
-//            ds.service3.RequestMessage request = ds.service3.RequestMessage.newBuilder().setText(entry3.getText()).build();
-//
-//            //retreving reply from service
-//            ds.service3.ResponseMessage response = blockingStub.service3Do(request);
-//
-//            reply3.setText( String.valueOf( response.getLength()) );
 
+            //Dogs Body temperature Service
         }else if (label.equals("Calculate")) {
-            System.out.println("service 4 to be invoked ...");
+            System.out.println("Dogs Body temperature Service to be invoked ...");
 
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
+            ServiceInfo serviceInfo;
+            String service_type = "_health._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
                     .usePlaintext()
                     .build();
 
@@ -540,9 +580,17 @@ public class ControllerGUI implements ActionListener {
 
 
         }else if (label.equals("Start Step Tracking")) {
-            System.out.println("service 5 to be invoked ...");
+            System.out.println("Step Tracking Service invoked ...");
 
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
+            ServiceInfo serviceInfo;
+            String service_type = "_health._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
                     .usePlaintext()
                     .build();
 
@@ -602,9 +650,17 @@ public class ControllerGUI implements ActionListener {
 
 
         }else if (label.equals("Heartbeat Tracking")) {
-            System.out.println("service 6 to be invoked ...");
+            System.out.println("Heartbeat Tracking Service invoked ...");
 
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50053)
+            ServiceInfo serviceInfo;
+            String service_type = "_health._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
                     .usePlaintext()
                     .build();
 
@@ -652,14 +708,21 @@ public class ControllerGUI implements ActionListener {
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
+        //Turn the light on for the dog, Stream the lux value of the light outside
+        }else if (label.equals("Current Light")) {
+            System.out.println("Turn the Light on stream the lux value ...");
 
-        }else if (label.equals("Invoke Service 7")) {
-            System.out.println("service 7 to be invoked ...");
+            ServiceInfo serviceInfo;
+            String service_type = "_collar._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
 
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50054)
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
                     .usePlaintext()
                     .build();
-
 
             System.out.println("Making Stub");
 
@@ -703,13 +766,22 @@ public class ControllerGUI implements ActionListener {
                 }
             }).run();
 
-//            System.out.print("The Channel is shutting down!");
-//            channel.shutdown();
+            System.out.print("The Channel is shutting down!");
+            channel.shutdown();
 
-        }else if (label.equals("Invoke Service 8")) {
-            System.out.println("service 8 to be invoked ...");
+        // Send messages to the dog, client streaming
+        }else if (label.equals("Send to Collar")) {
+            System.out.println("Send messages to the dog ...");
 
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50054)
+            ServiceInfo serviceInfo;
+            String service_type = "_collar._tcp.local.";
+            //Now get the service info - all we are supplying is the service type
+            serviceInfo = ServiceDiscovery.run(service_type);
+            //Use the serviceInfo to retrieve the port
+            int port = serviceInfo.getPort();
+            String host = "localhost";
+
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
                     .usePlaintext()
                     .build();
 
@@ -730,6 +802,7 @@ public class ControllerGUI implements ActionListener {
                     //we get a response from the server
                     System.out.println("Received a response from the server ");
                     System.out.println(value.getResult());
+                    reply8.append(value.getResult());
                 }
 
                 @Override
@@ -750,7 +823,7 @@ public class ControllerGUI implements ActionListener {
             System.out.println("Client Sent Message 1:");
             requestObserver.onNext(StreamVoiceRequest.newBuilder()
                     .setVoiceMessages(VoiceMessages.newBuilder()
-                            .setMessage1("Come Home Fido")
+                            .setMessage1(entry8.getText())
                             .build())
                     .build());
 
@@ -759,7 +832,7 @@ public class ControllerGUI implements ActionListener {
             System.out.println("Client Sent Message 2:");
             requestObserver.onNext(StreamVoiceRequest.newBuilder()
                     .setVoiceMessages(VoiceMessages.newBuilder()
-                            .setMessage2("Dinner is ready")
+                            .setMessage2(entry88.getText())
                             .build())
                     .build());
 
@@ -768,7 +841,7 @@ public class ControllerGUI implements ActionListener {
             System.out.println("Client Sent Message 3:");
             requestObserver.onNext(StreamVoiceRequest.newBuilder()
                     .setVoiceMessages(VoiceMessages.newBuilder()
-                            .setMessage3("Quickly Come Home Fido")
+                            .setMessage3(entry888.getText())
                             .build())
                     .build());
 
@@ -786,7 +859,6 @@ public class ControllerGUI implements ActionListener {
             System.out.print("The Channel is shutting down!");
             channel.shutdown();
 
-//            reply5.setText( String.valueOf() );
         }
 
 

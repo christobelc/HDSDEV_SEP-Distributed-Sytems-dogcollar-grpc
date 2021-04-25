@@ -2,7 +2,6 @@ package com.github.collarservice.grpc.client;
 
 import com.github.collarservice.grpc.*;
 
-import com.github.greet.grpc.GreetServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;

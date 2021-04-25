@@ -31,10 +31,10 @@ public class DogTrackingClient {
 //        doWearingCollar(channel);
 
         //server streaming grpc method
-//        doUpdateLocation(channel);
+        doUpdateLocation(channel);
 
         //bidirectional grpc method
-        doFindTheDog(channel);
+//        doFindTheDog(channel);
 
         // do something
         System.out.println("Channel Shutdown!");
