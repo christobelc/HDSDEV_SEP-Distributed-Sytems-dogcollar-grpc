@@ -14,37 +14,6 @@ public final class HealthServiceGrpc {
   public static final String SERVICE_NAME = "healthservice.HealthService";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<com.github.healthservice.grpc.TemperatureRequest,
-      com.github.healthservice.grpc.TemperatureResponse> getCheckTemperatureMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "checkTemperature",
-      requestType = com.github.healthservice.grpc.TemperatureRequest.class,
-      responseType = com.github.healthservice.grpc.TemperatureResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.github.healthservice.grpc.TemperatureRequest,
-      com.github.healthservice.grpc.TemperatureResponse> getCheckTemperatureMethod() {
-    io.grpc.MethodDescriptor<com.github.healthservice.grpc.TemperatureRequest, com.github.healthservice.grpc.TemperatureResponse> getCheckTemperatureMethod;
-    if ((getCheckTemperatureMethod = HealthServiceGrpc.getCheckTemperatureMethod) == null) {
-      synchronized (HealthServiceGrpc.class) {
-        if ((getCheckTemperatureMethod = HealthServiceGrpc.getCheckTemperatureMethod) == null) {
-          HealthServiceGrpc.getCheckTemperatureMethod = getCheckTemperatureMethod =
-              io.grpc.MethodDescriptor.<com.github.healthservice.grpc.TemperatureRequest, com.github.healthservice.grpc.TemperatureResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "checkTemperature"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.github.healthservice.grpc.TemperatureRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.github.healthservice.grpc.TemperatureResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new HealthServiceMethodDescriptorSupplier("checkTemperature"))
-              .build();
-        }
-      }
-    }
-    return getCheckTemperatureMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<com.github.healthservice.grpc.PedometerRequest,
       com.github.healthservice.grpc.PedometerResponse> getStepCounterMethod;
 
@@ -107,6 +76,37 @@ public final class HealthServiceGrpc {
     return getBpmCounterMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.github.healthservice.grpc.TemperatureRequest,
+      com.github.healthservice.grpc.TemperatureResponse> getCheckTemperatureMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "checkTemperature",
+      requestType = com.github.healthservice.grpc.TemperatureRequest.class,
+      responseType = com.github.healthservice.grpc.TemperatureResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.github.healthservice.grpc.TemperatureRequest,
+      com.github.healthservice.grpc.TemperatureResponse> getCheckTemperatureMethod() {
+    io.grpc.MethodDescriptor<com.github.healthservice.grpc.TemperatureRequest, com.github.healthservice.grpc.TemperatureResponse> getCheckTemperatureMethod;
+    if ((getCheckTemperatureMethod = HealthServiceGrpc.getCheckTemperatureMethod) == null) {
+      synchronized (HealthServiceGrpc.class) {
+        if ((getCheckTemperatureMethod = HealthServiceGrpc.getCheckTemperatureMethod) == null) {
+          HealthServiceGrpc.getCheckTemperatureMethod = getCheckTemperatureMethod =
+              io.grpc.MethodDescriptor.<com.github.healthservice.grpc.TemperatureRequest, com.github.healthservice.grpc.TemperatureResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "checkTemperature"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.github.healthservice.grpc.TemperatureRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.github.healthservice.grpc.TemperatureResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new HealthServiceMethodDescriptorSupplier("checkTemperature"))
+              .build();
+        }
+      }
+    }
+    return getCheckTemperatureMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -157,16 +157,6 @@ public final class HealthServiceGrpc {
 
     /**
      * <pre>
-     *unary method call
-     * </pre>
-     */
-    public void checkTemperature(com.github.healthservice.grpc.TemperatureRequest request,
-        io.grpc.stub.StreamObserver<com.github.healthservice.grpc.TemperatureResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCheckTemperatureMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
      *Server Streaming Method call - Step counter for the dog using the inbuilt pedometer
      * </pre>
      */
@@ -185,15 +175,18 @@ public final class HealthServiceGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getBpmCounterMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     *unary method call
+     * </pre>
+     */
+    public void checkTemperature(com.github.healthservice.grpc.TemperatureRequest request,
+        io.grpc.stub.StreamObserver<com.github.healthservice.grpc.TemperatureResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCheckTemperatureMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-          .addMethod(
-            getCheckTemperatureMethod(),
-            io.grpc.stub.ServerCalls.asyncUnaryCall(
-              new MethodHandlers<
-                com.github.healthservice.grpc.TemperatureRequest,
-                com.github.healthservice.grpc.TemperatureResponse>(
-                  this, METHODID_CHECK_TEMPERATURE)))
           .addMethod(
             getStepCounterMethod(),
             io.grpc.stub.ServerCalls.asyncServerStreamingCall(
@@ -208,6 +201,13 @@ public final class HealthServiceGrpc {
                 com.github.healthservice.grpc.HeartBeatSensorRequest,
                 com.github.healthservice.grpc.HeartBeatSensorResponse>(
                   this, METHODID_BPM_COUNTER)))
+          .addMethod(
+            getCheckTemperatureMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.github.healthservice.grpc.TemperatureRequest,
+                com.github.healthservice.grpc.TemperatureResponse>(
+                  this, METHODID_CHECK_TEMPERATURE)))
           .build();
     }
   }
@@ -224,17 +224,6 @@ public final class HealthServiceGrpc {
     protected HealthServiceStub build(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new HealthServiceStub(channel, callOptions);
-    }
-
-    /**
-     * <pre>
-     *unary method call
-     * </pre>
-     */
-    public void checkTemperature(com.github.healthservice.grpc.TemperatureRequest request,
-        io.grpc.stub.StreamObserver<com.github.healthservice.grpc.TemperatureResponse> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getCheckTemperatureMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -258,6 +247,17 @@ public final class HealthServiceGrpc {
       io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getBpmCounterMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     *unary method call
+     * </pre>
+     */
+    public void checkTemperature(com.github.healthservice.grpc.TemperatureRequest request,
+        io.grpc.stub.StreamObserver<com.github.healthservice.grpc.TemperatureResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCheckTemperatureMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -272,16 +272,6 @@ public final class HealthServiceGrpc {
     protected HealthServiceBlockingStub build(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new HealthServiceBlockingStub(channel, callOptions);
-    }
-
-    /**
-     * <pre>
-     *unary method call
-     * </pre>
-     */
-    public com.github.healthservice.grpc.TemperatureResponse checkTemperature(com.github.healthservice.grpc.TemperatureRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getCheckTemperatureMethod(), getCallOptions(), request);
     }
 
     /**
@@ -304,6 +294,16 @@ public final class HealthServiceGrpc {
         com.github.healthservice.grpc.HeartBeatSensorRequest request) {
       return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getBpmCounterMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     *unary method call
+     * </pre>
+     */
+    public com.github.healthservice.grpc.TemperatureResponse checkTemperature(com.github.healthservice.grpc.TemperatureRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCheckTemperatureMethod(), getCallOptions(), request);
     }
   }
 
@@ -333,9 +333,9 @@ public final class HealthServiceGrpc {
     }
   }
 
-  private static final int METHODID_CHECK_TEMPERATURE = 0;
-  private static final int METHODID_STEP_COUNTER = 1;
-  private static final int METHODID_BPM_COUNTER = 2;
+  private static final int METHODID_STEP_COUNTER = 0;
+  private static final int METHODID_BPM_COUNTER = 1;
+  private static final int METHODID_CHECK_TEMPERATURE = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -354,10 +354,6 @@ public final class HealthServiceGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_CHECK_TEMPERATURE:
-          serviceImpl.checkTemperature((com.github.healthservice.grpc.TemperatureRequest) request,
-              (io.grpc.stub.StreamObserver<com.github.healthservice.grpc.TemperatureResponse>) responseObserver);
-          break;
         case METHODID_STEP_COUNTER:
           serviceImpl.stepCounter((com.github.healthservice.grpc.PedometerRequest) request,
               (io.grpc.stub.StreamObserver<com.github.healthservice.grpc.PedometerResponse>) responseObserver);
@@ -365,6 +361,10 @@ public final class HealthServiceGrpc {
         case METHODID_BPM_COUNTER:
           serviceImpl.bpmCounter((com.github.healthservice.grpc.HeartBeatSensorRequest) request,
               (io.grpc.stub.StreamObserver<com.github.healthservice.grpc.HeartBeatSensorResponse>) responseObserver);
+          break;
+        case METHODID_CHECK_TEMPERATURE:
+          serviceImpl.checkTemperature((com.github.healthservice.grpc.TemperatureRequest) request,
+              (io.grpc.stub.StreamObserver<com.github.healthservice.grpc.TemperatureResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -427,9 +427,9 @@ public final class HealthServiceGrpc {
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new HealthServiceFileDescriptorSupplier())
-              .addMethod(getCheckTemperatureMethod())
               .addMethod(getStepCounterMethod())
               .addMethod(getBpmCounterMethod())
+              .addMethod(getCheckTemperatureMethod())
               .build();
         }
       }

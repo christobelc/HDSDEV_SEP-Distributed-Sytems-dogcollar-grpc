@@ -15,16 +15,6 @@ public final class Healthservice {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_healthservice_TemperatureRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_healthservice_TemperatureRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_healthservice_TemperatureResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_healthservice_TemperatureResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_healthservice_PedometerStatus_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -54,6 +44,16 @@ public final class Healthservice {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_healthservice_HeartBeatSensorRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_healthservice_TemperatureRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_healthservice_TemperatureRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_healthservice_TemperatureResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_healthservice_TemperatureResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -64,81 +64,81 @@ public final class Healthservice {
   static {
     java.lang.String[] descriptorData = {
       "\n!healthservice/healthservice.proto\022\rhea" +
-      "lthservice\"0\n\022TemperatureRequest\022\032\n\022curr" +
-      "entTempRequest\030\001 \001(\005\"%\n\023TemperatureRespo" +
-      "nse\022\016\n\006result\030\001 \001(\t\":\n\017PedometerStatus\022\020" +
-      "\n\010isActive\030\001 \001(\010\022\025\n\rpreviousCount\030\002 \001(\005\"" +
-      "K\n\021PedometerResponse\022\016\n\006result\030\001 \001(\t\022\020\n\010" +
-      "avgSpeed\030\002 \001(\001\022\024\n\014currentCount\030\003 \001(\005\"K\n\020" +
-      "PedometerRequest\0227\n\017pedometerStatus\030\001 \001(" +
-      "\0132\036.healthservice.PedometerStatus\"D\n\025Hea" +
-      "rtBeatSensorStatus\022\020\n\010isActive\030\001 \001(\010\022\031\n\021" +
-      "previousUsageTime\030\002 \001(\001\"6\n\027HeartBeatSens" +
-      "orResponse\022\016\n\006result\030\001 \001(\t\022\013\n\003bpm\030\002 \001(\005\"" +
-      "]\n\026HeartBeatSensorRequest\022C\n\025heartBeatSe" +
-      "nsorStatus\030\001 \001(\0132$.healthservice.HeartBe" +
-      "atSensorStatus2\243\002\n\rHealthService\022[\n\020chec" +
-      "kTemperature\022!.healthservice.Temperature" +
-      "Request\032\".healthservice.TemperatureRespo" +
-      "nse\"\000\022T\n\013stepCounter\022\037.healthservice.Ped" +
-      "ometerRequest\032 .healthservice.PedometerR" +
-      "esponse\"\0000\001\022_\n\nbpmCounter\022%.healthservic" +
-      "e.HeartBeatSensorRequest\032&.healthservice" +
-      ".HeartBeatSensorResponse\"\0000\001B!\n\035com.gith" +
+      "lthservice\":\n\017PedometerStatus\022\020\n\010isActiv" +
+      "e\030\001 \001(\010\022\025\n\rpreviousCount\030\002 \001(\005\"K\n\021Pedome" +
+      "terResponse\022\016\n\006result\030\001 \001(\t\022\020\n\010avgSpeed\030" +
+      "\002 \001(\001\022\024\n\014currentCount\030\003 \001(\005\"K\n\020Pedometer" +
+      "Request\0227\n\017pedometerStatus\030\001 \001(\0132\036.healt" +
+      "hservice.PedometerStatus\"D\n\025HeartBeatSen" +
+      "sorStatus\022\020\n\010isActive\030\001 \001(\010\022\031\n\021previousU" +
+      "sageTime\030\002 \001(\001\"6\n\027HeartBeatSensorRespons" +
+      "e\022\016\n\006result\030\001 \001(\t\022\013\n\003bpm\030\002 \001(\005\"]\n\026HeartB" +
+      "eatSensorRequest\022C\n\025heartBeatSensorStatu" +
+      "s\030\001 \001(\0132$.healthservice.HeartBeatSensorS" +
+      "tatus\"0\n\022TemperatureRequest\022\032\n\022currentTe" +
+      "mpRequest\030\001 \001(\005\"%\n\023TemperatureResponse\022\016" +
+      "\n\006result\030\001 \001(\t2\243\002\n\rHealthService\022T\n\013step" +
+      "Counter\022\037.healthservice.PedometerRequest" +
+      "\032 .healthservice.PedometerResponse\"\0000\001\022_" +
+      "\n\nbpmCounter\022%.healthservice.HeartBeatSe" +
+      "nsorRequest\032&.healthservice.HeartBeatSen" +
+      "sorResponse\"\0000\001\022[\n\020checkTemperature\022!.he" +
+      "althservice.TemperatureRequest\032\".healths" +
+      "ervice.TemperatureResponse\"\000B!\n\035com.gith" +
       "ub.healthservice.grpcP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_healthservice_TemperatureRequest_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_healthservice_TemperatureRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_healthservice_TemperatureRequest_descriptor,
-        new java.lang.String[] { "CurrentTempRequest", });
-    internal_static_healthservice_TemperatureResponse_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_healthservice_TemperatureResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_healthservice_TemperatureResponse_descriptor,
-        new java.lang.String[] { "Result", });
     internal_static_healthservice_PedometerStatus_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_healthservice_PedometerStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_healthservice_PedometerStatus_descriptor,
         new java.lang.String[] { "IsActive", "PreviousCount", });
     internal_static_healthservice_PedometerResponse_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_healthservice_PedometerResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_healthservice_PedometerResponse_descriptor,
         new java.lang.String[] { "Result", "AvgSpeed", "CurrentCount", });
     internal_static_healthservice_PedometerRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_healthservice_PedometerRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_healthservice_PedometerRequest_descriptor,
         new java.lang.String[] { "PedometerStatus", });
     internal_static_healthservice_HeartBeatSensorStatus_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_healthservice_HeartBeatSensorStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_healthservice_HeartBeatSensorStatus_descriptor,
         new java.lang.String[] { "IsActive", "PreviousUsageTime", });
     internal_static_healthservice_HeartBeatSensorResponse_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_healthservice_HeartBeatSensorResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_healthservice_HeartBeatSensorResponse_descriptor,
         new java.lang.String[] { "Result", "Bpm", });
     internal_static_healthservice_HeartBeatSensorRequest_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_healthservice_HeartBeatSensorRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_healthservice_HeartBeatSensorRequest_descriptor,
         new java.lang.String[] { "HeartBeatSensorStatus", });
+    internal_static_healthservice_TemperatureRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_healthservice_TemperatureRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_healthservice_TemperatureRequest_descriptor,
+        new java.lang.String[] { "CurrentTempRequest", });
+    internal_static_healthservice_TemperatureResponse_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_healthservice_TemperatureResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_healthservice_TemperatureResponse_descriptor,
+        new java.lang.String[] { "Result", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

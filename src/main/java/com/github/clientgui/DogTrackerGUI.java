@@ -19,13 +19,13 @@ public class DogTrackerGUI implements ActionListener {
 
 
     //------------------------
-    private JLabel isWearingLabel = new JLabel("Wearing Collar");
+    private JLabel isWearingLabel = new JLabel("Wearing Collar: true/false");
     private JTextField isWearingEntry = new JTextField("", 10);
 
-    private JLabel bpmLabel = new JLabel("Beats per Minute");
+    private JLabel bpmLabel = new JLabel("Beats per minute: dd");
     private JTextField bpmEntry = new JTextField("", 10);
 
-    private JLabel bodyTempLabel = new JLabel("Body Temperature");
+    private JLabel bodyTempLabel = new JLabel("Body Temperature: 1-100");
     private JTextField bodyTempEntry = new JTextField("", 10);
 
     //    collarStatusBtn
@@ -33,18 +33,18 @@ public class DogTrackerGUI implements ActionListener {
     private JTextArea collarReadingTextArea = new JTextArea(10, 30);
 
 
-    private JLabel coordinates1Label = new JLabel("Coordinates 1");
+    private JLabel coordinates1Label = new JLabel("Coordinates 1: dd.dd,dd.dd");
     private JTextField coordinates1Entry = new JTextField("", 10);
 
-    private JLabel coordinates2Label = new JLabel("Coordinates 2");
+    private JLabel coordinates2Label = new JLabel("Coordinates 2: dd.dd,dd.dd");
     private JTextField coordinates2Entry = new JTextField("", 10);
 
 
-    private JLabel coordinates3Label = new JLabel("Coordinates 3");
+    private JLabel coordinates3Label = new JLabel("Coordinates 3: dd.dd,dd.dd");
     private JTextField coordinates3Entry = new JTextField("", 10);
 
 
-    private JLabel coordinates4Label = new JLabel("Coordinates 4");
+    private JLabel coordinates4Label = new JLabel("Coordinates 4: dd.dd,dd.dd");
     private JTextField coordinates4Entry = new JTextField("", 10);
 
     private JTextArea safezoneTextArea = new JTextArea(10, 30);
@@ -53,7 +53,7 @@ public class DogTrackerGUI implements ActionListener {
 
     // ------------------
 
-    private JLabel dogsCoordinatesLabel = new JLabel("Dog's Coordinates");
+    private JLabel dogsCoordinatesLabel = new JLabel("Dog's Coordinates: dd.dd,dd.dd");
     private JTextField dogsCoordinatesEntry = new JTextField("", 10);
 
     private JButton bidiStreamBtn = new JButton("Stream location");
