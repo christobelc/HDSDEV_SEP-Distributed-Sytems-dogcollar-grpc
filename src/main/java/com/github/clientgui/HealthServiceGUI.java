@@ -171,7 +171,7 @@ public class HealthServiceGUI implements ActionListener {
         //--------------------------------------------------------
 
         //set the panes
-        tabPane.add("Start Step Counter", stepCounterPanel);
+        tabPane.add("Step Counter", stepCounterPanel);
         tabPane.add("Heartbeat Tracker", heartbeatTrackingPanel);
         tabPane.add("Body Temperature", bodyTempPanel);
 
@@ -244,23 +244,19 @@ public class HealthServiceGUI implements ActionListener {
             new Thread(() -> {
                 AtomicInteger call = new AtomicInteger();
                 try {
-                    String isActive = stepCounterReadyEntry.getText();
+                    boolean isActive;
                     int previousCount = Integer.parseInt(previousCountEntry.getText());
-                    boolean flag = true;
-                    if(!isActive.equals("true")){
-                        flag = false;
-                    }
-                    System.out.println("Pedometer: " + flag);
+                    if(stepCounterReadyEntry.getText().equals("true")){
+                        isActive = true;
+
+                    System.out.println("Pedometer: " + isActive);
                     PedometerRequest pedometerRequest = PedometerRequest.newBuilder()
-                            .setPedometerStatus(PedometerStatus.newBuilder().setIsActive(flag))
+                            .setPedometerStatus(PedometerStatus.newBuilder().setIsActive(isActive))
                             .setPedometerStatus(PedometerStatus.newBuilder().setPreviousCount(previousCount))
                             .build();
                     System.out.println("We are here!");
                     Thread.sleep(1000);
 
-                    if(!flag){
-                        startStepCounterTextArea.append("Pedometer can't be reached!");
-                    }else {
                         //Stream in a blocking way
                         healthService.stepCounter(pedometerRequest)
                                 .forEachRemaining(pedometerResponse -> {
@@ -269,8 +265,11 @@ public class HealthServiceGUI implements ActionListener {
                                     System.out.println(pedometerResponse.getResult());
                                     System.out.println("The avg speed KPH is: "+pedometerResponse.getAvgSpeed());
                                 });
-                    }
 
+                    }else {
+                        System.out.println("The step counter is not ready!");
+                        startStepCounterTextArea.append("The step counter is not ready!\n");
+                    }
 
                 }catch(InterruptedException e1){
                     e1.printStackTrace();
@@ -312,16 +311,19 @@ public class HealthServiceGUI implements ActionListener {
 
             new Thread(() -> {
                 AtomicInteger call = new AtomicInteger();
+                //read all the values in from the GUI
                 try {
-                    String temp = heartBeatSensorReadyEntry.getText();
+//                    String temp = heartBeatSensorReadyEntry.getText();
                     double previousUsageTime = Double.parseDouble(previousUsageEntry.getText());
-                    boolean flag = true;
-                    if(!temp.equals("true")){
-                        flag = false;
-                    }
+                    boolean isActive;
+                    //if the heartbeat sensor is ready and active
+                    if(heartBeatSensorReadyEntry.getText().equals("true")){
+                        isActive = true;
 
+
+                    //build our Request!
                     HeartBeatSensorRequest heartBeatSensorRequest = HeartBeatSensorRequest.newBuilder()
-                            .setHeartBeatSensorStatus(HeartBeatSensorStatus.newBuilder().setIsActive(flag))
+                            .setHeartBeatSensorStatus(HeartBeatSensorStatus.newBuilder().setIsActive(isActive))
                             .setHeartBeatSensorStatus(HeartBeatSensorStatus.newBuilder().setPreviousUsageTime(previousUsageTime))
                             .build();
                     Thread.sleep(1000);
@@ -334,8 +336,13 @@ public class HealthServiceGUI implements ActionListener {
                                 System.out.println(heartBeatSensorResponse.getResult());
                             });
 
+                    }else {
+                        System.out.println("The heartbeat Sensor is not ready!");
+                        heartBeatSensorTextArea.append("The heartbeat Sensor is not ready!\n");
+                    }
                 }catch(InterruptedException e1){
                     e1.printStackTrace();
+                    //error on the clients side
                 }catch(StatusRuntimeException e1){
                     JOptionPane.showConfirmDialog(null, "Server not reachable");
                 }catch(IllegalArgumentException i){
@@ -369,15 +376,16 @@ public class HealthServiceGUI implements ActionListener {
             HealthServiceGrpc.HealthServiceBlockingStub healthService = HealthServiceGrpc.newBlockingStub(channel);
 
             try {
+                //read in user input from gui
                 String temp = bodyTemperatureEntry.getText();
                 int bodyTemp = Integer.parseInt(temp);
 
-                //Request
+                //Build Request
                 TemperatureRequest temperatureRequest = TemperatureRequest.newBuilder()
                         .setCurrentTempRequest(bodyTemp)
                         .build();
 
-                //Response
+                //Build Response
                 TemperatureResponse temperatureResponse = healthService.checkTemperature(temperatureRequest);
                 System.out.println(temperatureResponse.getResult());
 
@@ -386,6 +394,7 @@ public class HealthServiceGUI implements ActionListener {
 
             }catch(IllegalArgumentException i){
                 System.out.println("Invalid input for temperature!");
+                bodyTempTextArea.setText("Invalid input for temperature!\n");
             }
 
             System.out.print("The Channel is shutting down!");

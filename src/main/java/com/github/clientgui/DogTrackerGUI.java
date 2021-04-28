@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DogTrackerGUI implements ActionListener {
@@ -269,11 +270,15 @@ public class DogTrackerGUI implements ActionListener {
             double bodyTemp;
 
 
+            //inputs from the gui are read in
             try {
                 String temp = bpmEntry.getText();
+                //pass a value for the bpm
                 bpm = Integer.parseInt(temp);
+                //pass a value for the body temp
                 temp = bodyTempEntry.getText();
                 bodyTemp = Double.parseDouble(temp);
+                //if the dog is wearing the collar execute code
                 if (isWearingEntry.getText().equals("true")) {
                     wearing = true;
 
@@ -292,19 +297,24 @@ public class DogTrackerGUI implements ActionListener {
 
                     //pass the request message, call the gRPC method
                     WearingCollarResponse wearingCollarResponse = dogTracker.wearingCollar(wearingCollarRequest);
-//                    reply1.setText( String.valueOf(wearingCollarResponse.getResult()) );
                     collarReadingTextArea.setText(String.valueOf(wearingCollarResponse.getResult()));
                     System.out.println(String.valueOf(wearingCollarResponse.getResult()));
                 } else {
+                    //invalid user input then set values and output
                     wearing = false;
                     bpm = 0;
                     bodyTemp = 0.0;
+                    collarReadingTextArea.setText("Is dog wearing collar: " + wearing +"\n"+"beats per minute: "
+                            + bpm +"\n"+"body temperature: " + bodyTemp +"\n");
+                    collarReadingTextArea.setText("Please enter valid values for the inputs");
+
                 }
                 System.out.println("wearing: " + wearing);
                 System.out.println("bpm: " + bpm);
                 System.out.println("bodyTemp: " + bodyTemp);
             } catch (IllegalArgumentException i) {
                 System.out.println("Invalid inputs, please re-enter valid inputs");
+                collarReadingTextArea.setText("Invalid inputs, please re-enter valid inputs \n");
             }
 
             System.out.print("The Channel is shutting down!");
@@ -328,11 +338,13 @@ public class DogTrackerGUI implements ActionListener {
             // created a service client (Synchronous - Blocking)
             DogTrackingGrpc.DogTrackingBlockingStub dogTracker = DogTrackingGrpc.newBlockingStub(channel);
 
-          //Parse the input coordinates
-            String[] coordinates1 = coordinates1Entry.getText().split(",", 2);
-            String[] coordinates2 = coordinates2Entry.getText().split(",", 2);
-            String[] coordinates3 = coordinates3Entry.getText().split(",", 2);
-            String[] coordinates4 = coordinates4Entry.getText().split(",", 2);
+                //Parse the input coordinates
+                String[] coordinates1 = coordinates1Entry.getText().split(",", 2);
+                String[] coordinates2 = coordinates2Entry.getText().split(",", 2);
+                String[] coordinates3 = coordinates3Entry.getText().split(",", 2);
+                String[] coordinates4 = coordinates4Entry.getText().split(",", 2);
+
+
 
 //            retrieving reply from service
 
@@ -340,6 +352,7 @@ public class DogTrackerGUI implements ActionListener {
                 AtomicInteger call = new AtomicInteger();
 
                 try {
+                    //Set the values for the safety Zone from the values in the gui
                     SafetyZoneRequest safetyZoneRequest = SafetyZoneRequest.newBuilder()
                             .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLatitude(Double.parseDouble(coordinates1[0])))
                             .setSafeZoneCoordinates1(SafeZoneCoordinates.newBuilder().setLongitude(Double.parseDouble(coordinates1[1])))
@@ -360,12 +373,14 @@ public class DogTrackerGUI implements ActionListener {
                         safezoneTextArea.append(updateLocationResponse.getResult());
                         System.out.println(updateLocationResponse.getResult());
                     });
+                    //catch all the things that can go wrong
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 } catch (StatusRuntimeException e1) {
                     JOptionPane.showConfirmDialog(null, "Server not reachable");
                 } catch (IllegalArgumentException i) {
                     System.out.println("Invalid input for coordinates");
+                    safezoneTextArea.append("Invalid input for coordinates\n");
                 }
 
             }).run();
@@ -393,12 +408,13 @@ public class DogTrackerGUI implements ActionListener {
             //Asynchronous Stub
             DogTrackingGrpc.DogTrackingStub asyncClient = DogTrackingGrpc.newStub(channel);
 
+            //stream from the server the dogs location
             StreamObserver<OwnerLocationRequest> requestObserver = asyncClient.findTheDog(new StreamObserver<DogLocationResponse>() {
                 @Override
                 public void onNext(DogLocationResponse value) {
+                    //print the results to the console and the gui
                     System.out.println("Response from server: " + value.getDogCoordinates());
                     bidiTextArea.append("Response from server: " + value.getDogCoordinates() + "\n");
-//                    bidiTextArea.append("\n");
                 }
 
                 @Override
@@ -418,18 +434,23 @@ public class DogTrackerGUI implements ActionListener {
             });
 
 
+            //Client streaming part
+            //read in the coordinates from the gui
             String[] dogsCoordinates = dogsCoordinatesEntry.getText().split(",", 2);
             String coordinateParsed = dogsCoordinates[0] + "N " + dogsCoordinates[1] + "W";
             System.out.println("coordinate parsed" + coordinateParsed);
+            //lets create some fake coordinates data - copy it to the a string array
             String[] list = new String [6];
             for (int i = 0; i < 6; i++) {
                 list[i] = coordinateParsed;
             }
 
+            //the send the request to the server
             for (String coordinates : list) {
                 bidiTextArea.append("\n");
                 bidiTextArea.append("The dog's current coordinates: " + coordinates+ "\n");
                 System.out.println("The dog's current coordinates: " + coordinates+ "\n");
+                //build the request and send
                 requestObserver.onNext(OwnerLocationRequest.newBuilder()
                         .setOwnerCoordinates(coordinates)
                         .build());

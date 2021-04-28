@@ -215,9 +215,6 @@ public class CollarServiceGUI implements ActionListener {
             System.out.println("Making Stub");
             CountDownLatch latch = new CountDownLatch(1);
 
-
-            CollarServiceGrpc.CollarServiceBlockingStub collarService = CollarServiceGrpc.newBlockingStub(channel);
-
             // created a service client (Asynchronous)
             CollarServiceGrpc.CollarServiceStub asyncClient = CollarServiceGrpc.newStub(channel);
 
@@ -234,6 +231,7 @@ public class CollarServiceGUI implements ActionListener {
                 @Override
                 public void onError(Throwable t) {
                     // we get an error from the server
+                    System.out.println("Error from the server!");
                 }
 
                 @Override
@@ -245,37 +243,41 @@ public class CollarServiceGUI implements ActionListener {
                 }
             });
 
-            // 1st message
-            System.out.println("Client Sent Message 1:");
-            requestObserver.onNext(StreamVoiceRequest.newBuilder()
-                    .setVoiceMessages(VoiceMessages.newBuilder()
-                            .setMessage1(message1Entry.getText())
-                            .build())
-                    .build());
+            try {
+                // 1st message
+                System.out.println("Client Sent Message 1:");
+                requestObserver.onNext(StreamVoiceRequest.newBuilder()
+                        .setVoiceMessages(VoiceMessages.newBuilder()
+                                .setMessage1(message1Entry.getText())
+                                .build())
+                        .build());
 
 
-            // 2nd message
-            System.out.println("Client Sent Message 2:");
-            requestObserver.onNext(StreamVoiceRequest.newBuilder()
-                    .setVoiceMessages(VoiceMessages.newBuilder()
-                            .setMessage2(message2Entry.getText())
-                            .build())
-                    .build());
+                // 2nd message
+                System.out.println("Client Sent Message 2:");
+                requestObserver.onNext(StreamVoiceRequest.newBuilder()
+                        .setVoiceMessages(VoiceMessages.newBuilder()
+                                .setMessage2(message2Entry.getText())
+                                .build())
+                        .build());
 
 
-            // 3rd message
-            System.out.println("Client Sent Message 3:");
-            requestObserver.onNext(StreamVoiceRequest.newBuilder()
-                    .setVoiceMessages(VoiceMessages.newBuilder()
-                            .setMessage3(message3Entry.getText())
-                            .build())
-                    .build());
-
+                // 3rd message
+                System.out.println("Client Sent Message 3:");
+                requestObserver.onNext(StreamVoiceRequest.newBuilder()
+                        .setVoiceMessages(VoiceMessages.newBuilder()
+                                .setMessage3(message3Entry.getText())
+                                .build())
+                        .build());
+            }catch(IllegalArgumentException e2){
+                System.out.println("An illegal argument has been entered");
+                e2.printStackTrace();
+            }
 
             // after all the messages are sent we tell the server that sending data is finished
             requestObserver.onCompleted();
 
-            //latch is required to give time for server response
+            //latch is required to give time for server response, used instead of Thread.sleep()
             try {
                 latch.await(3L, TimeUnit.SECONDS);
             } catch (InterruptedException except) {
@@ -309,17 +311,17 @@ public class CollarServiceGUI implements ActionListener {
             new Thread(() -> {
                 AtomicInteger call = new AtomicInteger();
                 try {
-                    String temp = lightIsreadyEntry.getText();
+//                    String temp = lightIsreadyEntry.getText();
                     int battery = Integer.parseInt(batteryEntry.getText());
-                    boolean flag = true;
-                    if (!temp.equals("true")) {
-                        flag = false;
-                    }
+                    boolean isActive;
+                    if (lightIsreadyEntry.getText().equals("true") && battery > 0 && battery <=100) {
+                        isActive = true;
+
                     //---------------Server Streaming led light reader---------------
 
                     //build request
                     LedLightRequest ledLightRequest = LedLightRequest.newBuilder()
-                            .setLedLightStatus(LedLightStatus.newBuilder().setTurnOn(flag))
+                            .setLedLightStatus(LedLightStatus.newBuilder().setTurnOn(isActive))
                             .setLedLightStatus(LedLightStatus.newBuilder().setBattery(battery))
                             .build();
 
@@ -330,6 +332,11 @@ public class CollarServiceGUI implements ActionListener {
                                 lightTextArea.append(ledLightResponse.getResult()+"\n");
                                 System.out.println(ledLightResponse.getResult());
                             });
+                    }else{
+                        lightTextArea.append("The LED light is not ready, try again!\n");
+                        lightTextArea.append("Battery cannot be greater than 100 or lower than 0\n");
+                        System.out.println("The LED light is not ready, try again!\n");
+                    }
 
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();

@@ -68,10 +68,12 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
                             dogLocation[1] += 0.1;
                             String result = ("Dog's current location: " + dogLocation[0]
                                     + "N  " + dogLocation[1] + "W  ");
+                            //pass to the response the fake data!
                             UpdateLocationResponse response = UpdateLocationResponse.newBuilder()
                                     .setResult(result)
                                     .build();
 
+                            // pass the next response
                             responseObserver.onNext(response);
                             Thread.sleep(1000L);
                         }
@@ -79,13 +81,16 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
                         e.printStackTrace();
                     }
                 }else{
+                    //if the dog is outside the safety Zone
                     String result = "Dog is within bounds";
                     UpdateLocationResponse response = UpdateLocationResponse.newBuilder()
                             .setResult(result)
                             .build();
 
+                    //pass response
                     responseObserver.onNext(response);
                 }
+                //close off communications/gRPC call
         responseObserver.onCompleted();
     }
 
@@ -93,6 +98,7 @@ public class DogTrackingImpl extends DogTrackingGrpc.DogTrackingImplBase {
     public StreamObserver<OwnerLocationRequest> findTheDog(StreamObserver<DogLocationResponse> responseObserver) {
         StreamObserver<OwnerLocationRequest> requestObserver = new StreamObserver<OwnerLocationRequest>() {
             @Override
+            //Now we can stream the Owners location
             public void onNext(OwnerLocationRequest value) {
                 String OwnersCoordinates = "This is the current Owners Coordinates: " + value.getOwnerCoordinates();
                 //build response

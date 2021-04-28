@@ -79,18 +79,22 @@ public class HealthServiceImpl extends HealthServiceGrpc.HealthServiceImplBase {
         double previousUsageTime = request.getHeartBeatSensorStatus().getPreviousUsageTime();
         int bpm;
         try{
-            //lets read the bpm in real time, hardcoded values for demo purposes
+            //lets read the bpm in real time, hardcoded fake values for demo purposes
             for (int i = 0; i < 10; i++){
                 if (i%2 == 0){
                     bpm = 69;
                 }else{
                     bpm = 68;
                 }
+                //get the passed values from client for previous usage time
                 String hrsMinsSecs = String.valueOf(previousUsageTime);
+                //split into hrs and minutes
                 String [] values = hrsMinsSecs.split("\\.",2);
                 int hrs = Integer.parseInt(values[0]);
                 int mins = Integer.parseInt(values[1]);
+                //build the string of results
                 String result = "Current bpm: " + bpm + " | Total usage time:: "+ hrs +" hours - "  +  mins +" minutes - " + i + " seconds";
+                //build the response
                 HeartBeatSensorResponse heartBeatSensorResponse = HeartBeatSensorResponse.newBuilder()
                         .setResult(result)
                         .build();
@@ -100,6 +104,7 @@ public class HealthServiceImpl extends HealthServiceGrpc.HealthServiceImplBase {
         }catch(InterruptedException e){
             e.printStackTrace();
         }finally {
+            //complete the gRPC call
             responseObserver.onCompleted();
         }
     }
